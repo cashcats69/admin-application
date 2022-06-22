@@ -1,16 +1,24 @@
 import styled from "@emotion/styled";
 import { useState } from "react"
+import { TMain, TAboutSelect } from "../../../interfaces";
 import dropArrow from '../../icons/dropArrow.svg'
 import searchSvg from '../../icons/Search.svg'
-const Main = styled.div`
-  margin: 20px 0 0 0;
+const Main = styled.div<TMain>(({widthProp}) =>`
+  margin: 20px 24px 0 0;
   font-family: sans-serif;
   background: #FFFFFF;
   position: relative;
-  width:100%;
+  width:${widthProp};
   height:76px;
   background:#FFFFFF;
-`;
+  &:last-of-type{
+    margin-right:0; 
+}
+  @media(max-width:768px){
+    width:100%;
+    margin: 20px 0 0 0;
+  }
+`)
 
 const DropDownContainer = styled.div`
 width:100%;
@@ -84,7 +92,8 @@ list-style: none;
 const DrowArrow = styled.img`
 position:absolute;
 top:60%; 
-left: 95%
+right:15px;
+z-index:100;
 `
 const InputLabel = styled.label`
 height:20px;
@@ -128,11 +137,8 @@ height:20px;
 const options = ["Томск","Кемерово", "Москва", "Санкт-Петербург","Красноярск","Воронеж","Омск","Таганрог"];
 const genders = ["Женщина","Мужчина"];
 const pets = ["Нет","Есть"];
-export type TAboutSelect ={
-    inputName:string,
-    placeholderName:string,
-}
-export const AboutSelect:React.FC<TAboutSelect> = ({inputName,placeholderName}) => {
+
+export const AboutSelect:React.FC<TAboutSelect> = ({inputName,placeholderName,widthProp}) => {
     const [state,setState] = useState(options[0])
     const [isOpen, setIsOpen] = useState(false);
     const [inputState,setInputState] = useState<string[]>([])
@@ -152,7 +158,7 @@ const onChangeInput = (e:React.ChangeEvent<HTMLInputElement>) => {
 
 }
     return (
-        <Main>
+        <Main widthProp={widthProp}>
             <InputLabel>{inputName}</InputLabel>
             <DrowArrow src={dropArrow}/>
         <DropDownContainer>
@@ -180,7 +186,7 @@ const onChangeInput = (e:React.ChangeEvent<HTMLInputElement>) => {
     );
 }
 
-export const GenderSelect:React.FC<TAboutSelect> = ({inputName,placeholderName}) => {
+export const GenderSelect:React.FC<TAboutSelect> = ({inputName,placeholderName,widthProp}) => {
   const [state,setState] = useState(genders[0])
   const [isOpen, setIsOpen] = useState(false);
 const toggling = () => {
@@ -192,7 +198,7 @@ const onOptionClicked = (value: string) => () => {
   setIsOpen(false);
 };
   return (
-      <Main>
+      <Main widthProp={widthProp}>
           <InputLabel>{inputName}</InputLabel>
           <DrowArrow src={dropArrow}/>
       <DropDownContainer>
@@ -215,7 +221,7 @@ const onOptionClicked = (value: string) => () => {
   );
 }
 
-export const PetsSelect:React.FC<TAboutSelect> = ({inputName,placeholderName}) => {
+export const PetsSelect:React.FC<TAboutSelect> = ({inputName,placeholderName,widthProp}) => {
   const [state,setState] = useState(pets[0])
   const [isOpen, setIsOpen] = useState(false);
 const toggling = () => {
@@ -227,7 +233,7 @@ const onOptionClicked = (value: string) => () => {
   setIsOpen(false);
 };
   return (
-      <Main>
+      <Main widthProp={widthProp}>
           <InputLabel>{inputName}</InputLabel>
           <DrowArrow src={dropArrow}/>
       <DropDownContainer>

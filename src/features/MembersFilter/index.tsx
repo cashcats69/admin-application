@@ -70,7 +70,7 @@ const onOptionClicked = (value: string) => () => {
     
     if(value !== Filter.other){
       const newAction = action.filter(item => {return Filter[item.status] === value })
-      console.log(newAction)
+      
     setAction(newAction)
       }else{
         setAction(action)

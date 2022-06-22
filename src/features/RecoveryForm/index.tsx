@@ -54,10 +54,11 @@ margin-left:12px;
 }`
 
 
-export const RecoveryForm:React.FC<IRecoveryForm> = ({check,setCheck}) => {
+export const RecoveryForm:React.FC<IRecoveryForm> = ({check,sendData}) => {
     const [name, setName] = useState<string>('');
     const [buttonDisabled,setButtonDisabled] = useState<boolean>(true);
-
+    const [mailInvalid, setMailInvalid] = useState<boolean>(false);
+    const [localCheck,setLocalCheck] = useState(true);
 const Container = styled.div`
 position:relative;
 display:flex;
@@ -73,6 +74,7 @@ top:30%;
         const regexLogin = RegExp("^((?=[a-zA-Z0-9])[a-zA-Z0-9!#$%&\\'*+\-\/=?^_`.{|}~]{1,25})@(([a-zA-Z0-9\-]){1,25}\.)([a-zA-Z0-9]{2,4})$");
         if(regexLogin.test(name)){
             setButtonDisabled(false);
+            setMailInvalid(false)
         }else{
             setButtonDisabled(true);
         }
@@ -80,41 +82,25 @@ top:30%;
     
     const onNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setName(e.target.value);
-        console.log(e.target.value);
+        setMailInvalid(true)
     };
-    const onSubmit = (e: React.FormEvent) => {
+    const onSubmit = async (e: React.FormEvent) => {
         const regexLogin = RegExp("^((?=[a-zA-Z0-9])[a-zA-Z0-9!#$%&\\'*+\-\/=?^_`.{|}~]{1,25})@(([a-zA-Z0-9\-]){1,25}\.)([a-zA-Z0-9]{2,4})$");
         e.preventDefault();
     
-        if (name) {
-        //   addItemEv({
-        //     id: Date.now(),
-        //     name: name,
-        //     password: password,
-        //   });
-        if(regexLogin.test(name)){
-        console.log(1);
-        }else{
-            console.log('reg 0');
-        }}else{
-            console.log(0);
+        if (name && regexLogin.test(name)) {
+            const checker = sendData(name)
+            if(await checker){setLocalCheck(false)}else{
+                setLocalCheck(true)
+            }
         }
-        const checkUser = () => {
-            return false
-        }
-        const res = checkUser()
-        if(res === false){
-            setCheck(false)
-            setTimeout(() => {
-                setCheck(true)
-            },5000)
-        };
+        
     }
     return(
         <AuthInputForm onSubmit={onSubmit}>
             <Container><NavLink to='/'><Img src={Arrow}></Img></NavLink>
             <StyledH2>Изменение пароля</StyledH2></Container>
-            <AuthInput check={check} inputName={"Электронная почта"} inputType={"text"} onChangeFunc={onNameChange} inputPattern="^((?=[a-zA-Z0-9])[a-zA-Z0-9!#$%&\\'*+\-\/=?^_`.{|}~]{1,25})@(([a-zA-Z0-9\-]){1,25}\.)([a-zA-Z0-9]{2,4})$"/>
+            <AuthInput check={localCheck ? check : !mailInvalid} inputName={"Электронная почта"} inputType={"text"} onChangeFunc={onNameChange} inputPattern="^((?=[a-zA-Z0-9])[a-zA-Z0-9!#$%&\\'*+\-\/=?^_`.{|}~]{1,25})@(([a-zA-Z0-9\-]){1,25}\.)([a-zA-Z0-9]{2,4})$" infoValue={mailInvalid}/>
             <Container><RecoveryButton buttonDisabled={buttonDisabled}/> <NavLink to='/'><ButtonCancel>Отмена</ButtonCancel></NavLink></Container>
             </AuthInputForm>
     )

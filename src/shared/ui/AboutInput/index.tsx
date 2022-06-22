@@ -1,4 +1,5 @@
 import styled from "@emotion/styled"
+import { TAboutInput, TDiv } from "../../../interfaces"
 
 const Input = styled.input`
 outline: none;
@@ -29,23 +30,26 @@ letter-spacing: -0.0124em;
 text-align: left;
 margin:0;
 `
-const Div = styled.div`
+const Div = styled.div<TDiv>(({widthProp}) =>`
 position:relative;
 display:flex;
 flex-direction:column;
 color: #333333;
 margin-top: 20px;
-width:100%;
-`
-export type TAboutInput ={
-    inputName:string,
-    placeholderName:string,
-    inputPattern:string,
-    onChangeFunc:(e:React.ChangeEvent<HTMLInputElement>) => void,
+width:${widthProp};
+margin-right:24px;
+&:last-of-type{
+    margin-right:0; 
 }
-export const AboutInput:React.FC<TAboutInput> = ({inputName,placeholderName,inputPattern,onChangeFunc}) => {
+@media(max-width:768px){
+    margin-right:0px;
+    width:100%;
+}
+`)
+
+export const AboutInput:React.FC<TAboutInput> = ({inputName,placeholderName,inputPattern,onChangeFunc,widthProp}) => {
     return(
-        <Div>
+        <Div widthProp={widthProp}>
         <InputLabel>{inputName}</InputLabel>
         <Input placeholder={placeholderName} onChange={onChangeFunc} pattern={inputPattern}/>
     </Div>

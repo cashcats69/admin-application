@@ -4,10 +4,13 @@ import redditIcon from '../../shared/icons/reddit.svg'
 import telegaIcon from '../../shared/icons/telega.svg'
 import vkIcon from '../../shared/icons/vk.svg'
 // import popOk from '../../shared/icons/popupOK.svg'
-import popNot from '../../shared/icons/popNOT.svg'
+
 import { RecoveryForm } from "../../features/RecoveryForm"
 import { useState } from "react"
 import { keyframes } from "@emotion/react"
+import { ErrorSend } from "../../processes/ErrorCode"
+import { send } from "process"
+import { TResponseData } from "../../interfaces"
 const StyledH3 = styled.h3`
 margin:0px;
 font-size:34px;
@@ -61,45 +64,43 @@ margin-right:80px;
 margin-right:0px;
     }
 `
-const pop = keyframes`
-0% {
-    transform: translate3d(500px,0px,0);
-}
-100% {
-    transform: translate3d(0,0,0);
-    }
 
-}
-`
-const Img = styled.img`
-animation: ${pop} 1s ease;
-margin-top:auto;
-margin-left:auto;
-margin-bottom:80px;
-margin-right:40px;
-cursor:pointer;
-@media (max-width: 550px) {
-    width:288px;
-    height:166px;
-    margin-left:auto;
-    margin-right:auto;
-        }
-`
 const PopupInv = styled.div`
 position:absolute;
 `
 export const RecoveryPage = () => {
+    async function sendData(data:string) {
+    const getValue = () =>{
+        return true
+    }
+    const checker = getValue()
+    if(checker === false){
+        setCheck(false)
+        setTypePop(false)
+        
+        console.log(1)
+    } 
+    if(checker === true){
+        setCheck(false)
+        setTypePop(true)
+        console.log(2)
+    }
+    console.log(3)
+    setTimeout(() => {
+        setCheck(true)
+    }, 3000)
+    return checker
+    }
     const [check,setCheck] = useState(true)
+    const [typePop,setTypePop] = useState(true)
     return(
         <AuthContainer>
             <HeaderContainer>
             <StyledH3>ilink</StyledH3>
             <StyledAC>ACADEMY</StyledAC>
             </HeaderContainer>
-            <RecoveryForm setCheck={setCheck} check={check}/>
-            {!check ? <Img src={popNot} onClick={() => {
-                setCheck(true)
-            }}/> : <PopupInv></PopupInv> }
+            <RecoveryForm check={check} sendData={sendData}/>
+            {!check ? <ErrorSend typePop={typePop} setCheck={setCheck}/> : <PopupInv></PopupInv> }
             <FooterDiv>
 <RightsReserved>iLINK ACADEMY. ALL RIGHTS RESERVED. 2022</RightsReserved>
 <SocIcons>

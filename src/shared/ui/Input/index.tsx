@@ -122,12 +122,24 @@ font-weight: 400;
 line-height: 18px;
 `
 
-export const AuthInput:React.FC<IAuthInput> = ({inputName,inputType, onChangeFunc,inputPattern,check}) =>{
-    
+export const AuthInput:React.FC<IAuthInput> = ({inputName,inputType,infoValue, onChangeFunc,inputPattern,check}) =>{
+    const Info = styled.img`
+width:25px;
+height:20px;
+display:${infoValue ? 'block' : 'none'};
+&:hover + ${SpanToolTip}{
+visibility:visible;
+}
+`
     return(
         <Div>
             <InputLabel>{inputName}</InputLabel>
             <Input colorProp={check ? '#E0E0E0' : '#EB5757'} placeholder={`Введите ${inputName.toLocaleLowerCase()}`} type={inputType} onChange={onChangeFunc} pattern={inputPattern}/>
+            <Indicators>
+            
+            <Info src={infoLogo} title='info'/>
+            <SpanToolTip>Почта должна соответствовать требованиям</SpanToolTip>
+            </Indicators>
         </Div>
         
     )
@@ -159,7 +171,7 @@ const togglePassword =()=>{
             <InputPass colorProp={check ? '#E0E0E0' : '#EB5757'} placeholder={`Введите ${inputName.toLocaleLowerCase()}`}  type={passwordType} onChange={onChangeFunc} pattern={inputPattern}/>
             <Indicators>
             
-            <Info src={infoLogo} title='jopa'/>
+            <Info src={infoLogo} title='info'/>
             <SpanToolTip>Пароль должен содержать латиницу и прописные буквы</SpanToolTip>
             <Eye src={value ? ShowLogo : HideLogo} onClick={() => togglePassword()}></Eye>
             </Indicators>

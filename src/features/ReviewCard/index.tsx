@@ -5,6 +5,7 @@ import rejectReview from '../../shared/icons/rejectedReview.svg'
 import acceptedReview from '../../shared/icons/acceptedReview.svg'
 import { TUserReviewCard, TColorProp, FilterReview, TButtonProp, TTextProp } from "../../interfaces"
 import { useEffect, useState } from "react"
+import { ButtonPublish, ButtonReject } from "../../shared/ui/ButtonReview"
 const Container = styled.div<TColorProp>(({colorProp}) => `
 display:flex;
 flex-direction:column;
@@ -113,34 +114,6 @@ margin:0px;
     line-height: 20px;
         }
 `
-const ButtonPublish = styled.button<TButtonProp>(({displayProp}) => `
-display:${displayProp};
-background: #585CC6;
-color:#FFFFFF;
-border:none;
-width:159px;
-height:52px;
-cursor:pointer;
-@media(max-width:550px){
-    width:108px;
-    height:42px;
-        }
-`)
-const ButtonReject = styled.button<TButtonProp>(({displayProp}) => `
-display:${displayProp};
-background: #EB5757;
-color:#FFFFFF;
-border:none;
-width:148px;
-height:52px;
-margin-left:12px;
-cursor:pointer;
-@media(max-width:550px){
-    margin-left:6px;
-    width:102px;
-    height:42px;
-        }
-`)
 const ButtonEdit = styled.button`
 background: #585CC6;
 color:#FFFFFF;
@@ -148,6 +121,9 @@ border:none;
 width:52px;
 height:52px;
 cursor:pointer;
+background-image:url(${editPhoto});
+background-position:center;
+background-repeat:no-repeat;
 @media(max-width:550px){
     width:42px;
     height:42px;
@@ -177,8 +153,7 @@ line-height: 28px;
 export const ReviewCard:React.FC<TUserReviewCard> = ({id,avatar,name,surname,review,handleClick}) => {
     const [buttonsState,setButtonsState] = useState(true);
     const [reviewState,setReviewState] = useState<string | null>(null);
-    const [buttonFinish,setButtonFinish] = useState(null);
-console.log(buttonsState)
+
 useEffect(() => {
     if(review.statusMessage !== FilterReview.unpublished){
         setButtonsState(false);
@@ -215,7 +190,7 @@ useEffect(() => {
         <ButtonReject name="reject" id={id.toString()} displayProp={buttonsState ? 'block' : 'none'} onClick={handleClick}>Отклонить</ButtonReject>
     </ButtonsContainer>
 <EditContainer displayProp={buttonsState ? 'block' : 'none'}>
-    <ButtonEdit ><img alt="noPhoto" src={editPhoto}/></ButtonEdit>
+    <ButtonEdit type='button' id={id.toString()} onClick={handleClick}></ButtonEdit>
 </EditContainer>
 </FooterContainer>
         </ReviewContainer>

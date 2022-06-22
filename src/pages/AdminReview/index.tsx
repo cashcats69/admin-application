@@ -4,11 +4,13 @@ import { SetStateAction, useEffect, useState } from "react"
 import { AdminHeader } from "../../features/AdminPanelHeader"
 import { PaginatedMenu } from "../../features/PaginatedMenu"
 import { ReviewCard } from "../../features/ReviewCard"
+import { ReviewPopup } from "../../features/ReviewPopup"
 import { ReviewsFilter } from "../../features/ReviewsFilter"
-import { FilterReview, TUsersStore } from "../../interfaces"
+import { FilterReview, TContainer, TUsersStore } from "../../interfaces"
 import { Footer } from "../../shared/ui/Footer"
-import { $exampleStore, $UsersStore, addItem, addNumber} from "../../store/UsersStore"
-const Container = styled.div`
+import { $RealUsersStore, $UsersStore, addItem, addNumber} from "../../store/UsersStore"
+
+const Container = styled.div<TContainer>(({overflowProp}) =>`
 background-color: #FFFFFF;
 min-height: 100vh;
 display: flex;
@@ -17,8 +19,9 @@ align-items: center;
 position:relative;
 font-size: calc(10px + 2vmin);
 color: white;
-
-`
+overflow-x: hidden;
+overflow-y: ${overflowProp};
+`)
 const BodyContainer = styled.div`
 height:100%;
 display:flex;
@@ -38,7 +41,7 @@ width:273px;
 }
 `
 const StyledUsers = styled.p`
-margin: 59px 0 40px 0;
+margin: 43px 0 40px 0;
 font-family: Factor A TRIAL;
 font-size: 32px;
 font-weight: 700;
@@ -60,7 +63,7 @@ margin: 26px  auto 16px auto;
 `
 const FilterContainer = styled.div`
     margin-top:16px;
-    width:98%;
+    max-width:1073px;
     height:auto;
     display:flex;
     flex-direction:row;
@@ -68,6 +71,7 @@ const FilterContainer = styled.div`
     align-items:center;
     
     @media(max-width:768px){
+        width:98%;
         flex-direction:column;
         justify-content:start;
         align-items:normal;
@@ -77,6 +81,7 @@ const FilterContainer = styled.div`
 
 const UsersList = styled.div`
 width:100%;
+max-width:1103px;
 min-width:320px;
 margin-left:24px;
 @media(max-width:990px){
@@ -104,23 +109,43 @@ margin-bottom:75px;
 `
 export const AdminReview:React.FC = () => {
     const usersStore = useStore($UsersStore); 
-    const bibaStore = useStore($exampleStore)
-    const [uStore,setUStore] = useState(usersStore); 
+    const realUsersStore = useStore($RealUsersStore)
     const addNumberFn = useEvent(addNumber);
+    const [uStore,setUStore] = useState(usersStore); 
+    const [modal,setModal] = useState<TUsersStore>()
+    const [filterState,setFilterState] = useState('Сначала неопубликованные') 
+    const [isOpen, setIsOpen] = useState(false);
+    console.log(realUsersStore)
     useEffect(() => {
         setUStore(usersStore)
     },[usersStore])
-    const [filterState,setFilterState] = useState('Сначала неопубликованные') 
     
     const filterReviews = (newAction: TUsersStore[],value: string) => { 
-        
-        console.log('nnnew',newAction);
         setUStore(newAction); 
         setFilterState(value); 
     } 
 
+    const finishEdit = (content:string) => {
+        console.log(content)
+        if(typeof(modal) !== "undefined"){
+        const newStore = uStore.map(user => {
+            if(user.id === Number(modal.id)){
+                const changedUser =  {...user, review:{date:user.review.date,
+                    edit:user.review.edit,
+                    message:content,
+                    statusMessage: user.review.statusMessage}}
+            return changedUser
+            }else{
+                return user
+            }
+        })
+        addItem(newStore)
+        }
+    }
+
+const toggling = (e:React.SyntheticEvent & {target:any} ) => {if(e.target.id === 'outsideModal' || e.target.type === 'button'){setIsOpen(!isOpen)}}
     const finishReview = (e:React.SyntheticEvent<HTMLButtonElement>) => {
-        console.log(e.target)
+        
         if(e.currentTarget.name === 'reject'){
             const newStore = uStore.map(user => {
                 if(user.id === Number(e.currentTarget.id)){
@@ -133,11 +158,11 @@ export const AdminReview:React.FC = () => {
                     return user
                 }
             })
-            console.log(newStore)
+            
             addItem(newStore);
             addNumberFn(1)
             // setUStore(newStore)
-        }else{
+        }else if(e.currentTarget.name === 'publish'){
             const newStore = uStore.map(user => {
                 if(user.id === Number(e.currentTarget.id)){
                     const changedUser =  {...user, review:{date:user.review.date,
@@ -153,9 +178,22 @@ export const AdminReview:React.FC = () => {
             addNumberFn(1)
             // setUStore(newStore)
         }
+        else{
+            uStore.map(user => {if(user.id === Number(e.currentTarget.id)){
+                const userEdit = {...user,review:{
+                    date:user.review.date,
+                    edit:user.review.edit,
+                    message:user.review.message,
+                    statusMessage:user.review.statusMessage
+                }}
+                setModal(userEdit)
+                toggling(e)
+            }})
+        }
     }
     return(
-        <Container>
+        <Container overflowProp={isOpen ? 'hidden' : 'visible' }>
+            {isOpen ? <ReviewPopup content={modal ? modal.review.message : ''} toggleModal={toggling} finishEdit={finishEdit}/> : <></>}
             <AdminHeader/>
             <BodyContainer><StyledMenu><PaginatedMenu currentPage={1}/></StyledMenu>
             <UsersList><FilterContainer><StyledUsers>Отзывы</StyledUsers><ReviewsFilter state={filterState} action={usersStore} handleClick={filterReviews} /></FilterContainer>

@@ -1,8 +1,9 @@
 import styled from "@emotion/styled"
+import { TAboutArea, TAboutTextArea, iModalTextArea } from "../../../interfaces"
 
-const TextArea = styled.textarea<TAboutArea>(({heightProp}) =>`
+const TextArea = styled.textarea<TAboutArea>(({heightProp,normalHeightProp}) =>`
 outline: none;
-height: 50px;
+height: ${normalHeightProp};
 width: 100%;
 border-radius: 2px;
 border: 1px solid #E0E0E0;
@@ -20,7 +21,7 @@ text-align: left;
 text-indent: 16px;
 margin-botton:8px;
 }
-@media(max-width:990px){
+@media(max-width:768px){
     width:calc(100% - 30px);
     line-height: 33px;
     color:#333333;
@@ -39,14 +40,14 @@ font-weight: 500;
 line-height: 20px;
 letter-spacing: -0.0124em;
 text-align: left;
-margin:0;
+margin:0 0 8px 0;
 `
 const AboutTextAreaContainer = styled.div`
 position:relative;
 display:flex;
 flex-direction:column;
 color: #333333;
-margin-top: 20px;
+
 width:100%;
 `
 const SymbolsCounter = styled.label`
@@ -61,22 +62,23 @@ color: #8A8A8A;
 bottom:5px; 
 right:10px;
 `
-export type TAboutTextArea ={
-    name:'long' | 'short'
-    TextAreaName:string,
-    placeholderName:string,
-    maxLength:string,
-    onChangeFunc:(e:React.ChangeEvent<HTMLTextAreaElement>) => void,
-    heightProp:string,
-    currentLength:number
-}
-export type TAboutArea = Pick<TAboutTextArea,'heightProp'>
-export const AboutTextArea:React.FC<TAboutTextArea> = ({TextAreaName,placeholderName,maxLength,onChangeFunc,heightProp,currentLength,name}) => {
+
+
+export const AboutTextArea:React.FC<TAboutTextArea> = ({TextAreaName,placeholderName,maxLength,onChangeFunc,normalHeightProp,heightProp,currentLength,name}) => {
     return(
         <AboutTextAreaContainer>
         <SymbolsCounter>{currentLength}/{maxLength}</SymbolsCounter>
         <TextAreaLabel>{TextAreaName}</TextAreaLabel>
-        <TextArea name={name} heightProp={heightProp} placeholder={placeholderName} onChange={onChangeFunc} maxLength={Number(maxLength)}/>
+        <TextArea normalHeightProp={normalHeightProp} name={name} heightProp={heightProp} placeholder={placeholderName} onChange={onChangeFunc} maxLength={Number(maxLength)}/>
+    </AboutTextAreaContainer>
+    )
+}
+export const ModalTextArea:React.FC<iModalTextArea> = ({maxLength,onChangeFunc,currentLength,content}) => {
+    return(
+        <AboutTextAreaContainer>
+        <SymbolsCounter>{currentLength}/{maxLength}</SymbolsCounter>
+        <TextAreaLabel>Отзыв</TextAreaLabel>
+        <TextArea onChange={onChangeFunc} maxLength={Number(maxLength)} normalHeightProp={"105px"} heightProp={"222px"} value={content}/>
     </AboutTextAreaContainer>
     )
 }

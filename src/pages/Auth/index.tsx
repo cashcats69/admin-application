@@ -4,8 +4,11 @@ import { AuthForm } from "../../features/Form"
 import vkIcon from '../../shared/icons/vk.svg'
 import redditIcon from '../../shared/icons/reddit.svg'
 import telegaIcon from '../../shared/icons/telega.svg'
-import { keyframes } from "@emotion/react"
 import { useState } from "react"
+import { ErrorPopup } from "../../processes/ErrorPopup"
+import { useNavigate } from "react-router-dom"
+import {  getUsers } from "../../store/UsersStore"
+import { TResponseData } from "../../interfaces"
 const StyledH3 = styled.h3`
 margin:0px;
 font-size:34px;
@@ -64,52 +67,17 @@ margin-right:80px;
 margin-right:0px;
     }
 `
-const pop = keyframes`
-0% {
-    transform: translate3d(0,0px,0);
-}
-15% {
-    transform: translate3d(0,-62px,0);
-    }
-70% {
-    transform: translate3d(0,-62px,0);
-    }
-100% {
-    transform: translate3d(0,0px,0);
-}
-`
-const Popup = styled.div`
-display:flex;
-justify-content:center;
-background:#EB5757;
-width:100%;
-position:absolute;
-height:62px;
-z-index:100;
-align-items:center;
-animation: ${pop} 5s ease;
-`
-const PopupInv = styled.div`
-position:absolute;
-`
-const PopupP = styled.p`
-font-family: Gilroy;
-font-size: 16px;
-font-weight: 500;
-line-height: 22px;
-letter-spacing: 0em;
-text-align: center;
-margin:0;
-padding:0;
-`
+
 
 export const AuthPage = () => {
     const [check,setCheck] = useState(true)
-    async function sendData(data:any) {
+    const [ErrText,setErrText] = useState('')
+    const toMain = useNavigate()
+    async function sendData(data: TResponseData) {
         const response = await fetch(
         "https://academtest.ilink.dev/user/signIn",{
             headers: {
-                'Accept': 'application/x-www-form-urlencoded',
+                'Accept': '*/*',
                 'Content-Type': 'application/x-www-form-urlencoded'
             },
             method:"POST",
@@ -118,11 +86,25 @@ export const AuthPage = () => {
         );
         if (response.ok) {
         let json = await response.json();
-        console.log("ok", json.data);
-        return json.data;
-        } else {
-        console.log("Ошибка HTTP: " + response.status);
-        }
+        console.log("ok", json.accessToken);
+        localStorage.setItem("token", json.accessToken);
+        getUsers()
+        toMain('/admin/members')
+        } else if(response.status === 400){
+            setErrText('Введен неверный пароль')
+        console.log("Ошибка HTTP 400: " + response.status);
+        setCheck(false)
+        setTimeout(() => {
+            setCheck(true)
+        },5000)
+        }   else if(response.status === 500){
+            console.log("Ошибка HTTP 500: " + response.status);
+            setErrText('Данного пользователя не существует')
+            setCheck(false)
+        setTimeout(() => {
+            setCheck(true)
+        },5000)
+            }
     }
     
     return(
@@ -131,9 +113,9 @@ export const AuthPage = () => {
             <StyledH3>ilink</StyledH3>
             <StyledAC>ACADEMY</StyledAC>
             </HeaderContainer>
-            <AuthForm setCheck={setCheck} check={check} sendData={sendData}/>
+            <AuthForm check={check} sendData={sendData}/>
             <FooterContainer>
-                {!check ? <Popup><PopupP>Такого пользователя не существует</PopupP></Popup> : <PopupInv></PopupInv> }
+            <ErrorPopup text={ErrText} check={check}/>
             
             <FooterDiv>
             

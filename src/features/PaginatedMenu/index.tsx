@@ -28,6 +28,7 @@ display:flex;
 margin-bottom:40px;
 margin-left:40px;
 border-bottom: 4px solid #FFFFFF;
+
 @media (max-width: 768px) {
     justify-content:center;
     margin:12px 0px 0 0px;

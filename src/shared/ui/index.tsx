@@ -15,6 +15,7 @@ background-color: #585CC6;
   background-size: cover;
   background-position: center;
   background-attachment: fixed;
+  overflow-x:hidden;
 `
 export const AuthInputForm = styled.form`
 height:428px;

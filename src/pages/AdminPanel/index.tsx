@@ -81,7 +81,7 @@ const paginate = (number: number) =>  setCurrentPage(number)
           <MembersFilter state={filterState} setState={setFilterState} action={usersStore} setAction={setUStore}/>
           </FilterContainer>
         <MembersHeader/>
-        {uStore.map((user,index) => { console.log(index+1); if(index+1 <= 6*currentPage && index+1 > (currentPage-1)*6) {return <User avatar={user.avatar} name={user.name} surname={user.surname} description={user.description} status={user.status}  key={user.id}/>}})}
+        {uStore.map((user,index) => {  if(index+1 <= 6*currentPage && index+1 > (currentPage-1)*6) {return <User avatar={user.avatar} name={user.name} surname={user.surname} description={user.description} status={user.status}  key={user.id}/>}})}
         <PaginatedList uStore={uStore} currentPage={currentPage} paginate={paginate}/>
         </UsersList>
         </BodyContainer>

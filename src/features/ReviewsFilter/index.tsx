@@ -97,14 +97,14 @@ const onOptionClicked = (value: string) => () => {
       const pubAction = action.filter(item => item.review.statusMessage === FilterReview.published).sort((a,b) => b.review.date.getTime() - a.review.date.getTime())
       const rejectAction = action.filter(item => item.review.statusMessage === FilterReview.rejected).sort((a,b) => b.review.date.getTime() - a.review.date.getTime())
       const newAction = notPubAction.concat(pubAction).concat(rejectAction)
-      console.log('new',newAction);
+      
       handleClick(newAction,value);
     } else if(value === FilterReview.rejected){
       const notPubAction = action.filter(item => item.review.statusMessage === FilterReview.unpublished).sort((a,b) => b.review.date.getTime() - a.review.date.getTime())
       const pubAction = action.filter(item => item.review.statusMessage === FilterReview.published).sort((a,b) => b.review.date.getTime() - a.review.date.getTime())
       const rejectAction = action.filter(item => item.review.statusMessage === FilterReview.rejected).sort((a,b) => b.review.date.getTime() - a.review.date.getTime())
       const newAction = rejectAction.concat(pubAction).concat(notPubAction)
-      console.log('new',newAction);
+      
       handleClick(newAction,value);
     } else if(value === FilterReview.published){
       const notPubAction = action.filter(item => item.review.statusMessage === FilterReview.unpublished).sort((a,b) => b.review.date.getTime() - a.review.date.getTime())
@@ -112,7 +112,7 @@ const onOptionClicked = (value: string) => () => {
       const rejectAction = action.filter(item => item.review.statusMessage === FilterReview.rejected).sort((a,b) => b.review.date.getTime() - a.review.date.getTime())
       const newAction = pubAction.concat(rejectAction).concat(notPubAction)
       handleClick(newAction,value);
-      console.log(newAction)
+      
     }
     setIsOpen(false);
     
