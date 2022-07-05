@@ -7,8 +7,9 @@ import { RecoveryButton } from "../../shared/ui/RecoveryButton";
 import Arrow from '../../shared/icons/Arrow.svg'
 import { IRecoveryForm } from "../../interfaces";
 const StyledH2 = styled.h2`
+font-family: Factor A;
 color: #333333;
-font-size: 24px;
+font-size: 32px;
 font-weight: 700;
 line-height: 32px;
 letter-spacing: 0em;
@@ -16,7 +17,7 @@ text-align: left;
 margin-bottom: 0px;
 margin-top:0px;
 @media (max-width: 550px) {
-    font-size:18px;
+font-size: 24px;
 }
 `
 export const AuthInputForm = styled.form`
@@ -33,21 +34,31 @@ align-items: center;
 justify-content: center;
 `
 const ButtonCancel = styled.button`
+font-family: Gilroy;
+font-size: 18px;
+font-weight: 600;
+text-align: center;
 height: 52px;
 width:185px;
 border-radius: 2px;
 border: 1px solid #585CC6;
 cursor:pointer;
-font-size: 14px;
-font-weight: 500;
-line-height: 18px;
-letter-spacing: 0.01em;
-text-align: center;
 background: #FFFFFF;
 color:#585CC6;
 margin-top:32px;
 margin-left:12px;
+background-size: 0% 100%;
+&:hover{
+background-image: linear-gradient(#C2C4FF, #C2C4FF);
+background-position: 0% 100%;
+background-repeat: no-repeat;
+background-size: 100% 100%;
+transition: background-size .5s, color .5s;
+}
 @media (max-width: 550px) {
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 18px;
     height: 42px;
     width: 85%;
     display:none;
@@ -101,7 +112,7 @@ top:30%;
             <Container><NavLink to='/'><Img src={Arrow}></Img></NavLink>
             <StyledH2>Изменение пароля</StyledH2></Container>
             <AuthInput check={localCheck ? check : !mailInvalid} inputName={"Электронная почта"} inputType={"text"} onChangeFunc={onNameChange} inputPattern="^((?=[a-zA-Z0-9])[a-zA-Z0-9!#$%&\\'*+\-\/=?^_`.{|}~]{1,25})@(([a-zA-Z0-9\-]){1,25}\.)([a-zA-Z0-9]{2,4})$" infoValue={mailInvalid}/>
-            <Container><RecoveryButton buttonDisabled={buttonDisabled}/> <NavLink to='/'><ButtonCancel>Отмена</ButtonCancel></NavLink></Container>
+            <Container><RecoveryButton buttonDisabled={buttonDisabled}/> <NavLink to='auth'><ButtonCancel>Отмена</ButtonCancel></NavLink></Container>
             </AuthInputForm>
     )
 

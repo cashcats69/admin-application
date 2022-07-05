@@ -61,11 +61,11 @@ margin-botton:8px;
 
 `)
 const InputLabel = styled.label`
+font-family: Factor A;
 height:20px;
 font-size: 14px;
 font-weight: 500;
 line-height: 20px;
-letter-spacing: -0.0124em;
 text-align: left;
 margin-bottom:4px;
 margin-top:24px;
@@ -106,7 +106,7 @@ margin-left:88%;
 const SpanToolTip = styled.span`
 visibility: hidden;
 width: 164px;
-height:34px;
+height:50px;
 background-color: #F5F5F5;
 color: #333333;
 text-align: center;

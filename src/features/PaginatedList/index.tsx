@@ -1,7 +1,7 @@
 import styled from "@emotion/styled";
 import { IPaginatedList } from "../../interfaces"
-
-
+import arrowLeft from '../../shared/icons/arrowLeftPag.svg'
+import arrowRight from '../../shared/icons/arrowRightPag.svg'
 const PaginatedContainer = styled.nav`
 display:flex;
 justify-content:center;
@@ -43,7 +43,7 @@ line-height: 24px;
 letter-spacing: 0em;
 text-align: center;
 `
-const PaginatedArrowLeft = styled.li`
+const PaginatedArrowLeft = styled.li<{colorProp:string}>(({colorProp}) =>`
 width:32px;
 height:32px;
 border: 1px solid #E0E0E0;
@@ -53,19 +53,26 @@ align-items:center;
 border-radius:10px;
 margin:4px;
 cursor:pointer;
-background:#C4C4C4;
-`
-const PaginatedArrowRight = styled.li`
+background:${colorProp};
+background-image:url(${arrowLeft});
+background-repeat: no-repeat;
+background-position: center;
+`)
+const PaginatedArrowRight = styled.li<{colorProp:string}>(({colorProp}) =>`
 width:32px;
 height:32px;
 border: 1px solid #E0E0E0;
 display:flex;
 justify-content:center;
 align-items:center;
+background:${colorProp};
 border-radius:10px;
 margin:4px;
 cursor:pointer;
-`
+background-image:url(${arrowRight});
+background-repeat: no-repeat;
+background-position: center;
+`)
 export const PaginatedList:React.FC<IPaginatedList> = ({uStore,currentPage,paginate}) => {
     const usersPerPage = 6;
     
@@ -76,10 +83,12 @@ const makeButtons = () => {
     }
 }
 makeButtons()
-    return(
+if(uStore.length !== 0){
+return(
+        
         <PaginatedContainer>
             <PaginatedUl>
-<PaginatedArrowLeft onClick={(event) => {
+<PaginatedArrowLeft colorProp={currentPage === 1 ? "#C4C4C4" : "#FFFFFF"} onClick={(event) => {
         event?.preventDefault();
         if(currentPage !== 1){
         paginate(currentPage - 1);
@@ -101,7 +110,7 @@ makeButtons()
     <PaginatedA href="#"  onClick={(event) => {event.preventDefault() }}>{number}</PaginatedA>
 </PaginatedLi>
 )}})}
-<PaginatedArrowRight onClick={(event) => {
+<PaginatedArrowRight colorProp={currentPage === 2 ? "#C4C4C4" : "#FFFFFF"} onClick={(event) => {
         event?.preventDefault();
         if(currentPage !== pageNumbers.length){
         paginate(currentPage + 1);
@@ -110,6 +119,9 @@ makeButtons()
             </PaginatedUl>
         </PaginatedContainer>
     )
+} else {
+    return(<></>)
+}
 }
 
 

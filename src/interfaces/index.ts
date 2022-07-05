@@ -2,15 +2,15 @@ export interface IAvatarUser {
     currentImg:string | null,
 }
 export interface IBriefUser{
-    brief:string,
+    smallAboutMe:string | null,
 }
 export type TResponseData = {
     email: string; 
     password: string 
 }
 export interface INameUser{
-    name: string,
-    surName:string
+    firstName: string | null,
+    lastName:string | null
 }
 //User
 export interface IMembersFilter {
@@ -21,20 +21,19 @@ export interface IMembersFilter {
 }
 export interface IReviewsFilter {
     state:string,
-    action:TUsersStore[],
-    handleClick: (newAction:TUsersStore[],value:string) => void,
+    action:iRealStore[],
+    handleClick: (newAction:iRealStore[],value:string) => void,
 }
 export enum Filter{
-    other = "Все",
     expelled = "Отчислен",
-    studying = "Обучается",
+    studies = "Обучается",
     finished = "Закончил",
 }
 //MembersFilter
 export enum FilterReview{
-    unpublished = "Сначала неопубликованные",
-    rejected = "Сначала отклоненные",
-    published = "Сначала опубликованные",
+    unpublished = "onCheck",
+    rejected = "declined",
+    published = "approved",
 }
 //Reviews filter
 export interface IPaginatedList{
@@ -64,8 +63,13 @@ export type TContainer = {
 export type TAboutInput ={
     inputName:string,
     placeholderName:string,
-    inputPattern:string,
     widthProp:string,
+    onChangeFunc:(e:React.ChangeEvent<HTMLInputElement>) => void,
+    isDisabled:boolean,
+    currentValue:string | null,
+}
+export type TAddInput ={
+    placeholderName:string,
     onChangeFunc:(e:React.ChangeEvent<HTMLInputElement>) => void,
 }
 export type TDiv = Pick<TAboutInput,'widthProp'>
@@ -73,15 +77,38 @@ export type TButtonReview = {
     widthProp:string,
     colorProp:string,
     text:string,
-    handleClick:(e:React.SyntheticEvent<HTMLButtonElement>) => void
+    name: 'publish' | 'reject',
+    handleClick:(e:React.SyntheticEvent<HTMLButtonElement>) => void,
+    isDisabled:boolean,
 }
 export type TAboutSelect ={
     inputName:string,
     placeholderName:string,
-    widthProp:string
+    widthProp:string,
+    isDisabled:boolean,
+    currentValue:string | null,
+    getValue: React.Dispatch<React.SetStateAction<string | null>>,
+}
+export type TGenderSelect=  {
+    inputName:string,
+    placeholderName:string,
+    widthProp:string,
+    isDisabled:boolean,
+    currentValue:string | null,
+    getValue: React.Dispatch<React.SetStateAction<string | null>>,
+}
+export type TPetSelect ={
+    inputName:string,
+    placeholderName:string,
+    widthProp:string,
+    isDisabled:boolean,
+    currentValue:boolean | null,
+    getValue: React.Dispatch<React.SetStateAction<boolean | null>>,
 }
 export type TMain = Pick<TAboutSelect,'widthProp'>
-export type TStyledButton = Omit<TButtonReview,'text' | 'handleClick'>
+export interface IStyledButton extends Omit<TButtonReview,'text' | 'handleClick' | 'isDisabled'> {
+    transitionProp:string;
+}
 export type TAboutTextArea ={
     name:'long' | 'short'
     TextAreaName:string,
@@ -90,20 +117,38 @@ export type TAboutTextArea ={
     onChangeFunc:(e:React.ChangeEvent<HTMLTextAreaElement>) => void,
     normalHeightProp:string,
     heightProp:string,
-    currentLength:number
+    currentLength:number,
+    isDisabled:boolean,
+    currentValue:string | null,
 }
 export interface iModalTextArea extends Pick<TAboutTextArea, 'maxLength' | 'onChangeFunc' | 'currentLength'> {
-    content:string
+    content:string,
+    isDisabled:boolean,
+    name:string;
+}
+export interface iAddTextArea extends Pick<TAboutTextArea, 'maxLength' | 'onChangeFunc' | 'currentLength'> {
+    name:string,
+    
 }
 export type TAboutArea = Pick<TAboutTextArea,'heightProp' | 'normalHeightProp'>
 export type TEditButton = {
     text:string,
     handleClick: () => void,
 }
+export type TPhotoInput ={
+    currentValue:string,
+    getValue:(e:React.ChangeEvent<HTMLInputElement>) => void,
+}
 export type TReviewPopup = {
     content:string,
     toggleModal:(e:React.SyntheticEvent) => void,
     finishEdit:(content:string) => void,
+    loader:boolean,
+    }
+export type TReviewAdd = {
+    toggleModal:(e:React.SyntheticEvent) => void,
+    makeReview:(content:TMakeReview) => void,
+    loader:boolean,
     }
 export type IRecoveryButton = {
     buttonDisabled:boolean,
@@ -118,6 +163,33 @@ export type IButtonSubmit = {
     buttonText:string,
     buttonType: SubmitButton,
     buttonDisabled: boolean,
+}
+export type TErrorPopup = {
+    check:boolean,
+    text:string
+}
+export type TCurrentText ={
+    colorProp:string;
+}
+export type TNoData = {
+    text:string
+}
+export type TAlarmReview = {
+    typePop:boolean,
+    theme: 'edit' | 'send' | 'profile',
+    setCheck:React.Dispatch<React.SetStateAction<boolean>>,
+}
+export type TErrSend = {
+    typePop:boolean,
+    setCheck:React.Dispatch<React.SetStateAction<boolean>>
+}
+export type TUpdateStatus ={
+    id:string,
+    status:"approved" | "declined"
+}
+export type TEditReview = {
+    id:string,
+    text:string,
 }
 export type IAuthInput = {
     inputName:string,
@@ -134,10 +206,10 @@ export interface IAuthInputPassword {
     inputPattern:string,
     check:boolean,  
 }
-export type StatusUser = 'expelled' | 'studying' | 'finished';
+export type TStatusUser = 'expelled' | 'studies' | 'finished';
 
 export interface IStatusUser {
-    statusU:StatusUser
+    academyStatus:TStatusUser
 }
 export type TListItem = {
         id: number,
@@ -145,21 +217,51 @@ export type TListItem = {
         password: string,
     }    
 export type TUsersStore = {
-    id:number,
-    avatar:string | null,
-    name:string,
-    surname:string,
-    description:string,
-    status:StatusUser,
-    review:{
-        message:string,
-        statusMessage:FilterReview,
-        edit:boolean,
-        date:Date,
+aboutMe: string | null,
+academyStatus: TStatusUser,
+birthDate: Date | null,
+cityOfResidence: string,
+createdAt: Date,
+deletedAt: Date | null,
+email: string,
+favoriteFood: string | null,
+firstName: string | null,
+gender: "male" | "female",
+hasPet: boolean,
+id: string,
+lastLoginDate: Date,
+lastName: string | null,
+password: string,
+petName: string | null,
+petType: string | null,
+profileImage: string | null,
+smallAboutMe: string | null,
+updatedAt: Date,
+version: number,
 }
+export type TUserAdmin = Pick<TUsersStore, "academyStatus" | "firstName" | "lastName" | "smallAboutMe" | "profileImage" >
+export interface iRealStore {
+    authorImage: string | null,
+    authorName: string,
+    createdAt:  Date,
+    deletedAt:Date | null,
+    id:string,
+    status: "onCheck" | "declined" | "approved",
+    text:string,
+    title:string | null,
+    updatedAt:Date | null,
+    version:number | null,
 }
-export type TUserAdmin = Omit<TUsersStore,"review" | "id">
-export interface TUserReviewCard extends Omit<TUsersStore,"description" | "status"> {
+export interface TUserReviewCard extends iRealStore {
+    
     handleClick: (e: React.SyntheticEvent<HTMLButtonElement>) => void;
 }
-export type TReviewCardStatus = Pick<TUsersStore,"review">
+export type TUserMainCard = Pick<iRealStore,'authorImage' | 'authorName' | 'text' | 'createdAt'>
+export type TReviewCardStatus = Pick<iRealStore,"status">
+export type TMakeReview = {
+    authorName:string,
+    content:string,
+    captchaKey:string,
+    captchaValue:string,
+    imageFile:File | null,
+}

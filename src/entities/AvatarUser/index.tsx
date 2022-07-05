@@ -8,7 +8,10 @@ export const AvatarUser:React.FC<IAvatarUser> = ({currentImg}) => {
     height:40px;
     margin:0;
     padding:0;
-
+    @media(max-width:768px){
+    width:20px;
+    height:20px;
+    }
     `
     return(
         <Avatar src={currentImg ? currentImg : noPhoto}></Avatar>

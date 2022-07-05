@@ -1,25 +1,28 @@
 import styled from "@emotion/styled"
-import { TAboutArea, TAboutTextArea, iModalTextArea } from "../../../interfaces"
+import { TAboutArea, TAboutTextArea, iModalTextArea, iAddTextArea } from "../../../interfaces"
 
 const TextArea = styled.textarea<TAboutArea>(({heightProp,normalHeightProp}) =>`
 outline: none;
 height: ${normalHeightProp};
-width: 100%;
 border-radius: 2px;
 border: 1px solid #E0E0E0;
 padding:0px;
-text-indent: 16px;
 font-weight: 400;
 font-size: 14px;
-line-height: 45px;
+line-height: 30px;
 font-family: Gilroy;
+padding-left:16px;
+padding-right:16px;
 resize:none;
 ::placeholder{
 color: #8A8A8A;
 letter-spacing: 0em;
 text-align: left;
-text-indent: 16px;
 margin-botton:8px;
+}
+&:disabled{
+    background:#FFFFFF;
+    color: #8A8A8A;
 }
 @media(max-width:768px){
     width:calc(100% - 30px);
@@ -34,8 +37,8 @@ margin-botton:8px;
 }
 `)
 const TextAreaLabel = styled.label`
-height:20px;
-font-size: 14px;
+font-family: Factor A;
+font-size: 16px;
 font-weight: 500;
 line-height: 20px;
 letter-spacing: -0.0124em;
@@ -47,7 +50,15 @@ position:relative;
 display:flex;
 flex-direction:column;
 color: #333333;
-
+margin: 20px 0 0 0;
+width:100%;
+`
+const ModalTextAreaContainer = styled.div`
+position:relative;
+display:flex;
+flex-direction:column;
+color: #333333;
+margin: 0;
 width:100%;
 `
 const SymbolsCounter = styled.label`
@@ -64,21 +75,30 @@ right:10px;
 `
 
 
-export const AboutTextArea:React.FC<TAboutTextArea> = ({TextAreaName,placeholderName,maxLength,onChangeFunc,normalHeightProp,heightProp,currentLength,name}) => {
+export const AboutTextArea:React.FC<TAboutTextArea> = ({currentValue,isDisabled,TextAreaName,placeholderName,maxLength,onChangeFunc,normalHeightProp,heightProp,currentLength,name}) => {
     return(
         <AboutTextAreaContainer>
         <SymbolsCounter>{currentLength}/{maxLength}</SymbolsCounter>
         <TextAreaLabel>{TextAreaName}</TextAreaLabel>
-        <TextArea normalHeightProp={normalHeightProp} name={name} heightProp={heightProp} placeholder={placeholderName} onChange={onChangeFunc} maxLength={Number(maxLength)}/>
+        <TextArea value={currentValue ? currentValue : ''} disabled={isDisabled} normalHeightProp={normalHeightProp} name={name} heightProp={heightProp} placeholder={placeholderName} onChange={onChangeFunc} maxLength={Number(maxLength)}/>
     </AboutTextAreaContainer>
     )
 }
-export const ModalTextArea:React.FC<iModalTextArea> = ({maxLength,onChangeFunc,currentLength,content}) => {
+export const ModalTextArea:React.FC<iModalTextArea> = ({isDisabled,maxLength,onChangeFunc,currentLength,content,name}) => {
     return(
-        <AboutTextAreaContainer>
+        <ModalTextAreaContainer>
         <SymbolsCounter>{currentLength}/{maxLength}</SymbolsCounter>
-        <TextAreaLabel>Отзыв</TextAreaLabel>
-        <TextArea onChange={onChangeFunc} maxLength={Number(maxLength)} normalHeightProp={"105px"} heightProp={"222px"} value={content}/>
-    </AboutTextAreaContainer>
+        <TextAreaLabel>{name}</TextAreaLabel>
+        <TextArea placeholder="Вы не можете оставить отзыв пустым..." disabled={isDisabled} onChange={onChangeFunc} maxLength={Number(maxLength)} normalHeightProp={"105px"} heightProp={"222px"} value={content}/>
+    </ModalTextAreaContainer>
+    )
+}
+export const AddTextArea:React.FC<iAddTextArea> = ({maxLength,onChangeFunc,currentLength,name}) => {
+    return(
+        <ModalTextAreaContainer>
+        <SymbolsCounter>{currentLength}/{maxLength}</SymbolsCounter>
+        <TextAreaLabel>{name}</TextAreaLabel>
+        <TextArea placeholder="Напишите пару слов о вашем опыте..."  onChange={onChangeFunc} maxLength={Number(maxLength)} normalHeightProp={"105px"} heightProp={"105px"}/>
+    </ModalTextAreaContainer>
     )
 }

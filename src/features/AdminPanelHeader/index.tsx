@@ -1,5 +1,9 @@
 import styled from "@emotion/styled"
-import headerSvg from "./icon.svg"
+import { useStore } from "effector-react"
+import { $userStore, getData } from "../../store/AboutStore"
+import noPhoto from "../../shared/icons/noPhoto.svg"
+import { useEffect, useState } from "react"
+import { useNavigate } from "react-router-dom"
 const HeaderContainer = styled.div`
 background:#585CC6;
 width:100vw;
@@ -33,7 +37,7 @@ margin:auto;
 }
 `
 const ContainerCol = styled.div`
-
+cursor:pointer;
 display:flex;
 flex-direction:column;
 align-items:center;
@@ -53,7 +57,7 @@ margin:0px;
 font-size:15.5px;
 `
 const HeaderMiddle = styled.p`
-font-family: 'Factor A TRIAL';
+font-family: 'Factor A';
 font-style: normal;
 font-weight: 700;
 font-size: 32px;
@@ -80,7 +84,7 @@ letter-spacing: 0.03em;
 text-align: left;
 color:#FFFFFF;
 margin-left:12px;
-width:100px;
+width:120px;
 `
 const FlexContainer = styled.div`
 display:flex;
@@ -93,18 +97,25 @@ margin:0 0 0 80px;
 }
 `
 export const AdminHeader:React.FC = () => {
+    const toMain = useNavigate()
+    const userStore = useStore($userStore)
+    const [firstName,setFirstname] = useState<string | null>(null);
+    const [lastName,setLastname] = useState<string | null>(null);
+    const [photo,setPhoto] = useState<string | null>(null);
+    useEffect(() => {getData()},[])
+    useEffect(() => {setFirstname(userStore.firstName); setLastname(userStore.lastName); setPhoto(userStore.profileImage);},[userStore])
     return(
     <HeaderContainer>
         <FlexContainer>
         <Container>
-            <HeaderImg src={headerSvg}/>
-            <HeaderContainerP>Яна Валиева</HeaderContainerP>
+            <HeaderImg src={photo ? "https://academtest.ilink.dev/images/" + photo : noPhoto}/>
+            <HeaderContainerP>{firstName ? firstName : '' }  {lastName ? lastName : '' }</HeaderContainerP>
         </Container>
         <ContainerMiddle>
             <HeaderMiddle>Панель управления</HeaderMiddle>
         </ContainerMiddle>
         </FlexContainer>
-        <ContainerCol>
+        <ContainerCol onClick={() => toMain('/main')}>
             <StyledH3>ilink</StyledH3>
             <StyledAC>ACADEMY</StyledAC>
         </ContainerCol>

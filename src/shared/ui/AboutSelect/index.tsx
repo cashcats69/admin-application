@@ -1,6 +1,6 @@
 import styled from "@emotion/styled";
-import { useState } from "react"
-import { TMain, TAboutSelect } from "../../../interfaces";
+import { useState, memo, useEffect } from "react"
+import { TMain, TAboutSelect, TGenderSelect, TPetSelect, TCurrentText } from "../../../interfaces";
 import dropArrow from '../../icons/dropArrow.svg'
 import searchSvg from '../../icons/Search.svg'
 const Main = styled.div<TMain>(({widthProp}) =>`
@@ -43,9 +43,10 @@ font-size: 14px;
 line-height: 22px;
 font-family: Gilroy;
 `;
-const CurrentText = styled.p`
-color: #8A8A8A;
-`
+
+const CurrentText = styled.p<TCurrentText>(({colorProp}) =>`
+color: ${colorProp};
+`)
 
 const DropDownListContainer = styled.div`
 background:#FFFFFF;
@@ -54,20 +55,21 @@ border-right:2px solid #E0E0E0;
 display:flex;
 flex-direction:column;
 width:100%;
-  position: absolute;
-  z-index: 100;
+position: absolute;
+z-index: 100;
+color: #333333;
 `;
 
 const DropDownList = styled.ul`
-
+color: #333333;
 width:100%;
-  padding: 0;
-  margin: 0;
-  background: #ffffff;
-  box-sizing: border-box;
-  color: #333333;
-  font-size: 1.3rem;
-  font-weight: 500;
+padding: 0;
+margin: 0;
+background: #ffffff;
+box-sizing: border-box;
+color: #333333;
+font-size: 1.3rem;
+font-weight: 500;
 `;
 
 const ListItem = styled.li`
@@ -80,6 +82,7 @@ font-size: 14px;
 line-height: 50px;
 font-family: Gilroy;
 list-style: none;
+color: #333333;
   &:hover {
     color: #585CC6;
     background: #F5F5F5;
@@ -88,22 +91,26 @@ list-style: none;
     color: #585CC6;
     background: #F5F5F5;
   }
+&:disabled{
+  color: #8A8A8A;
+}
 `;
 const DrowArrow = styled.img`
 position:absolute;
 top:60%; 
 right:15px;
 z-index:100;
+color: #333333;
 `
 const InputLabel = styled.label`
+font-family: Factor A;
 height:20px;
 font-size: 14px;
 font-weight: 500;
 line-height: 20px;
-letter-spacing: -0.0124em;
 text-align: left;
 margin:0;
-color:black;
+color: #333333;
 `
 const Input = styled.input`
 background:#FFFFFF;
@@ -119,6 +126,7 @@ font-size: 14px;
 line-height: 22px;
 font-family: Gilroy;
 margin: 12px auto 12px auto;
+color: #333333;
 background-image:url('${searchSvg}');
 background-repeat:no-repeat;
 background-position: 8px 50%;
@@ -129,17 +137,20 @@ text-align: left;
 text-indent: 30px;
 margin-botton:8px;
 }
+&:disabled{
+color: #8A8A8A;
+}
 `
 const Search = styled.img`
 width:20px;
 height:20px;
 `
 const options = ["Томск","Кемерово", "Москва", "Санкт-Петербург","Красноярск","Воронеж","Омск","Таганрог"];
-const genders = ["Женщина","Мужчина"];
-const pets = ["Нет","Есть"];
 
-export const AboutSelect:React.FC<TAboutSelect> = ({inputName,placeholderName,widthProp}) => {
-    const [state,setState] = useState(options[0])
+
+export const AboutSelect:React.FC<TAboutSelect> = memo(({currentValue,getValue,isDisabled,inputName,widthProp}) => {
+    const [state,setState] = useState(currentValue ? currentValue :options[0])
+    useEffect(() =>setState(currentValue ? currentValue : options[0]) ,[currentValue])
     const [isOpen, setIsOpen] = useState(false);
     const [inputState,setInputState] = useState<string[]>([])
 const toggling = () => {
@@ -150,7 +161,8 @@ const toggling = () => {
 const onOptionClicked = (value: string) => () => {
     setState(value);
     setIsOpen(false);
-    setInputState([])
+    setInputState([]);
+    getValue(value);
 };
 const onChangeInput = (e:React.ChangeEvent<HTMLInputElement>) => {
     const newAction = options.filter(item => {return item.toLowerCase().includes(e.target.value.toLowerCase())  })
@@ -162,8 +174,8 @@ const onChangeInput = (e:React.ChangeEvent<HTMLInputElement>) => {
             <InputLabel>{inputName}</InputLabel>
             <DrowArrow src={dropArrow}/>
         <DropDownContainer>
-            <DropDownHeader onClick={toggling}>
-            <CurrentText>{state}</CurrentText>
+            <DropDownHeader onClick={isDisabled ? toggling : undefined}>
+            <CurrentText colorProp={isDisabled ? '#333333' : '#A8A8A8'}>{state}</CurrentText>
             </DropDownHeader>
             {isOpen && (
             <DropDownListContainer>
@@ -184,10 +196,11 @@ const onChangeInput = (e:React.ChangeEvent<HTMLInputElement>) => {
         </DropDownContainer>
         </Main>
     );
-}
+});
+const genders = ["Женщина","Мужчина"];
 
-export const GenderSelect:React.FC<TAboutSelect> = ({inputName,placeholderName,widthProp}) => {
-  const [state,setState] = useState(genders[0])
+export const GenderSelect:React.FC<TGenderSelect> = memo(({currentValue,getValue,isDisabled,inputName,widthProp}) => {
+  const [state,setState] = useState(currentValue === 'female' ? genders[0] : genders[1])
   const [isOpen, setIsOpen] = useState(false);
 const toggling = () => {
 setIsOpen(!isOpen);
@@ -196,14 +209,15 @@ setIsOpen(!isOpen);
 const onOptionClicked = (value: string) => () => {
   setState(value);
   setIsOpen(false);
+  value === "Женщина" ? getValue('female') : getValue('male')
 };
   return (
       <Main widthProp={widthProp}>
           <InputLabel>{inputName}</InputLabel>
           <DrowArrow src={dropArrow}/>
       <DropDownContainer>
-          <DropDownHeader onClick={toggling}>
-          <CurrentText>{state}</CurrentText>
+          <DropDownHeader onClick={ isDisabled ? toggling : undefined}>
+          <CurrentText colorProp={isDisabled ? '#333333' : '#A8A8A8'}>{state}</CurrentText>
           </DropDownHeader>
           {isOpen && (
           <DropDownListContainer>
@@ -219,26 +233,26 @@ const onOptionClicked = (value: string) => () => {
       </DropDownContainer>
       </Main>
   );
-}
-
-export const PetsSelect:React.FC<TAboutSelect> = ({inputName,placeholderName,widthProp}) => {
-  const [state,setState] = useState(pets[0])
+});
+const pets = ["Нет","Есть"];
+export const PetsSelect:React.FC<TPetSelect> = memo(({currentValue,getValue,isDisabled,inputName,widthProp}) => {
+  const [state,setState] = useState(currentValue === false ? pets[0] : pets[1])
   const [isOpen, setIsOpen] = useState(false);
 const toggling = () => {
 setIsOpen(!isOpen);
 };
-
 const onOptionClicked = (value: string) => () => {
   setState(value);
   setIsOpen(false);
+  value === "Есть" ? getValue(true) : getValue(false);
 };
   return (
       <Main widthProp={widthProp}>
           <InputLabel>{inputName}</InputLabel>
           <DrowArrow src={dropArrow}/>
       <DropDownContainer>
-          <DropDownHeader onClick={toggling}>
-          <CurrentText>{state}</CurrentText>
+          <DropDownHeader onClick={isDisabled ? toggling : undefined}>
+          <CurrentText colorProp={isDisabled ? '#333333' : '#A8A8A8'}>{state}</CurrentText>
           </DropDownHeader>
           {isOpen && (
           <DropDownListContainer>
@@ -254,4 +268,4 @@ const onOptionClicked = (value: string) => () => {
       </DropDownContainer>
       </Main>
   );
-}
+});

@@ -4,18 +4,18 @@ import { AuthForm } from "../../features/Form"
 import vkIcon from '../../shared/icons/vk.svg'
 import redditIcon from '../../shared/icons/reddit.svg'
 import telegaIcon from '../../shared/icons/telega.svg'
+import logo from '../../shared/icons/ilinkLogoWhite.svg'
 import { useState } from "react"
 import { ErrorPopup } from "../../processes/ErrorPopup"
 import { useNavigate } from "react-router-dom"
-import {  getUsers } from "../../store/UsersStore"
 import { TResponseData } from "../../interfaces"
-const StyledH3 = styled.h3`
-margin:0px;
-font-size:34px;
-`
-const StyledAC = styled.p`
-margin:0px;
-font-size:15.5px;
+import { useEvent } from "effector-react"
+import { authTrue } from "../../store/AuthStore"
+const ImgLogo = styled.img`
+@media(max-width:768px){
+    width:59px;
+    height:36px;
+}
 `
 const HeaderContainer = styled.div`
 margin-bottom:40px;
@@ -45,7 +45,7 @@ height:84px;
 }
 `
 const RightsReserved = styled.p`
-font-family: Factor A TRIAL;
+font-family: 'Factor A' ;
 font-size: 12px;
 font-weight: 400;
 line-height: 20px;
@@ -72,6 +72,7 @@ margin-right:0px;
 export const AuthPage = () => {
     const [check,setCheck] = useState(true)
     const [ErrText,setErrText] = useState('')
+    const authTrueFn = useEvent(authTrue)
     const toMain = useNavigate()
     async function sendData(data: TResponseData) {
         const response = await fetch(
@@ -85,14 +86,14 @@ export const AuthPage = () => {
         }
         );
         if (response.ok) {
+        authTrueFn()
         let json = await response.json();
-        console.log("ok", json.accessToken);
         localStorage.setItem("token", json.accessToken);
-        getUsers()
-        toMain('/admin/members')
+        localStorage.setItem("refreshToken", json.refreshToken);
+        toMain('main')
         } else if(response.status === 400){
             setErrText('Введен неверный пароль')
-        console.log("Ошибка HTTP 400: " + response.status);
+            console.log("Ошибка HTTP 400: " + response.status);
         setCheck(false)
         setTimeout(() => {
             setCheck(true)
@@ -110,8 +111,7 @@ export const AuthPage = () => {
     return(
         <AuthContainer >
             <HeaderContainer>
-            <StyledH3>ilink</StyledH3>
-            <StyledAC>ACADEMY</StyledAC>
+            <ImgLogo src={logo}/>
             </HeaderContainer>
             <AuthForm check={check} sendData={sendData}/>
             <FooterContainer>
@@ -121,12 +121,14 @@ export const AuthPage = () => {
             
 <RightsReserved>iLINK ACADEMY. ALL RIGHTS RESERVED. 2022</RightsReserved>
 <SocIcons>
-    <img alt='vk' src={vkIcon}></img>
-    <img alt='reddit' src={redditIcon}></img>
-    <img alt='telegram' src={telegaIcon}></img>
+    <a href="https://vk.com/inbeatofhappiness"><img src={vkIcon} alt='Vk'/></a>
+    <a href="https://www.reddit.com/" ><img src={redditIcon} alt='Reddit'/></a>
+    <a href="https://t.me/Ilusaaxd"><img src={telegaIcon} alt='Telegram'/></a>
 </SocIcons>
             </FooterDiv>
             </FooterContainer>
         </AuthContainer>
     )
 }
+
+

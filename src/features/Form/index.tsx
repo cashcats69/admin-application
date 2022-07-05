@@ -8,14 +8,18 @@ import { AuthInput, AuthInputPassword } from "../../shared/ui/Input"
 import { TResponseData } from "../../interfaces"
 
 const StyledH2 = styled.h2`
+font-family: Factor A;
 color: #333333;
-font-size: 24px;
+font-size: 32px;
 font-weight: 700;
 line-height: 32px;
 letter-spacing: 0em;
 text-align: left;
 margin-bottom: 0px;
 margin-top:0px;
+@media(max-width:768px){
+    font-size: 24px;
+}
 `
 interface IAuthForm{
     check:boolean,

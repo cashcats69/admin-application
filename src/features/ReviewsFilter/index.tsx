@@ -92,24 +92,24 @@ export const ReviewsFilter:React.FC<IReviewsFilter> = ({state,action,handleClick
 const toggling = () => setIsOpen(!isOpen);
 
 const onOptionClicked = (value: string) => () => {
-    if(value === FilterReview.unpublished){
-      const notPubAction = action.filter(item => item.review.statusMessage === FilterReview.unpublished).sort((a,b) => b.review.date.getTime() - a.review.date.getTime())
-      const pubAction = action.filter(item => item.review.statusMessage === FilterReview.published).sort((a,b) => b.review.date.getTime() - a.review.date.getTime())
-      const rejectAction = action.filter(item => item.review.statusMessage === FilterReview.rejected).sort((a,b) => b.review.date.getTime() - a.review.date.getTime())
+    if(value === "Сначала неопубликованные"){
+      const notPubAction = action.filter(item => item.status === FilterReview.unpublished).sort((a,b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+      const pubAction = action.filter(item => item.status === FilterReview.published).sort((a,b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+      const rejectAction = action.filter(item => item.status === FilterReview.rejected).sort((a,b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
       const newAction = notPubAction.concat(pubAction).concat(rejectAction)
       
       handleClick(newAction,value);
-    } else if(value === FilterReview.rejected){
-      const notPubAction = action.filter(item => item.review.statusMessage === FilterReview.unpublished).sort((a,b) => b.review.date.getTime() - a.review.date.getTime())
-      const pubAction = action.filter(item => item.review.statusMessage === FilterReview.published).sort((a,b) => b.review.date.getTime() - a.review.date.getTime())
-      const rejectAction = action.filter(item => item.review.statusMessage === FilterReview.rejected).sort((a,b) => b.review.date.getTime() - a.review.date.getTime())
+    } else if(value === "Сначала отклоненные"){
+      const notPubAction = action.filter(item => item.status === FilterReview.unpublished).sort((a,b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+      const pubAction = action.filter(item => item.status === FilterReview.published).sort((a,b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+      const rejectAction = action.filter(item => item.status === FilterReview.rejected).sort((a,b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
       const newAction = rejectAction.concat(pubAction).concat(notPubAction)
       
       handleClick(newAction,value);
-    } else if(value === FilterReview.published){
-      const notPubAction = action.filter(item => item.review.statusMessage === FilterReview.unpublished).sort((a,b) => b.review.date.getTime() - a.review.date.getTime())
-      const pubAction = action.filter(item => item.review.statusMessage === FilterReview.published).sort((a,b) => b.review.date.getTime() - a.review.date.getTime())
-      const rejectAction = action.filter(item => item.review.statusMessage === FilterReview.rejected).sort((a,b) => b.review.date.getTime() - a.review.date.getTime())
+    } else if(value === "Сначала опубликованные"){
+      const notPubAction = action.filter(item => item.status === FilterReview.unpublished).sort((a,b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+      const pubAction = action.filter(item => item.status === FilterReview.published).sort((a,b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+      const rejectAction = action.filter(item => item.status === FilterReview.rejected).sort((a,b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
       const newAction = pubAction.concat(rejectAction).concat(notPubAction)
       handleClick(newAction,value);
       

@@ -16,14 +16,18 @@ font-size: 14px;
 font-weight: 700;
 line-height: 17px;
 letter-spacing: 0em;
-text-align: center;
 color: #464E5F;
+@media(max-width:768px){
+font-size: 12px;
+line-height: 15px;
+white-space: nowrap;
+}
 `
-export const NameUser:React.FC<INameUser> = ({name,surName}) => {
+export const NameUser:React.FC<INameUser> = ({ firstName,lastName}) => {
     return(
         <NameContainer>
             <NameP>
-        {name} {surName}
+        {firstName + ' ' + lastName} 
             </NameP>
         </NameContainer>
     )

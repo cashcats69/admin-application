@@ -4,7 +4,7 @@ import redditIcon from '../../shared/icons/reddit.svg'
 import telegaIcon from '../../shared/icons/telega.svg'
 import vkIcon from '../../shared/icons/vk.svg'
 // import popOk from '../../shared/icons/popupOK.svg'
-
+import logo from '../../shared/icons/ilinkLogoWhite.svg'
 import { RecoveryForm } from "../../features/RecoveryForm"
 import { useState } from "react"
 import { keyframes } from "@emotion/react"
@@ -42,7 +42,7 @@ height:84px;
 }
 `
 const RightsReserved = styled.p`
-font-family: Factor A TRIAL;
+font-family: 'Factor A' ;
 font-size: 12px;
 font-weight: 400;
 line-height: 20px;
@@ -68,6 +68,12 @@ margin-right:0px;
 const PopupInv = styled.div`
 position:absolute;
 `
+const ImgLogo = styled.img`
+@media(max-width:768px){
+    width:59px;
+    height:36px;
+}
+`
 export const RecoveryPage = () => {
     async function sendData(data:string) {
     const getValue = () =>{
@@ -78,14 +84,13 @@ export const RecoveryPage = () => {
         setCheck(false)
         setTypePop(false)
         
-        console.log(1)
+        
     } 
     if(checker === true){
         setCheck(false)
         setTypePop(true)
-        console.log(2)
+        
     }
-    console.log(3)
     setTimeout(() => {
         setCheck(true)
     }, 3000)
@@ -96,17 +101,16 @@ export const RecoveryPage = () => {
     return(
         <AuthContainer>
             <HeaderContainer>
-            <StyledH3>ilink</StyledH3>
-            <StyledAC>ACADEMY</StyledAC>
+            <ImgLogo src={logo}/>
             </HeaderContainer>
             <RecoveryForm check={check} sendData={sendData}/>
             {!check ? <ErrorSend typePop={typePop} setCheck={setCheck}/> : <PopupInv></PopupInv> }
             <FooterDiv>
 <RightsReserved>iLINK ACADEMY. ALL RIGHTS RESERVED. 2022</RightsReserved>
 <SocIcons>
-    <img src={vkIcon} alt='Vk'></img>
-    <img src={redditIcon} alt='Reddit'></img>
-    <img src={telegaIcon} alt='Telegram'></img>
+    <a href="https://vk.com/inbeatofhappiness"><img src={vkIcon} alt='Vk'/></a>
+    <a href="https://www.reddit.com/" ><img src={redditIcon} alt='Reddit'/></a>
+    <a href="https://t.me/Ilusaaxd"><img src={telegaIcon} alt='Telegram'/></a>
 </SocIcons>
             </FooterDiv>
         </AuthContainer>

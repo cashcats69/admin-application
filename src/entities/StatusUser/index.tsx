@@ -2,8 +2,8 @@ import styled from "@emotion/styled"
 import { useState } from "react";
 import { IStatusUser } from "../../interfaces";
 
-export const StatusUser:React.FC<IStatusUser> = ({statusU}) => {
-    const [status,setStatusU] = useState(statusU);
+export const StatusUser:React.FC<IStatusUser> = ({academyStatus}) => {
+    const [status,setStatusU] = useState(academyStatus);
     const StudyingContainer = styled.div`
     display:flex;
     width:139px;
@@ -11,6 +11,10 @@ export const StatusUser:React.FC<IStatusUser> = ({statusU}) => {
     background:#F0F9ED;
     justify-content:center;
     align-items:center;
+    @media(max-width:768px){
+        width:89px;
+        height:33px;
+    }
     `
     const StudyingP = styled.p`
     margin:0;
@@ -63,7 +67,7 @@ switch(status){
     return(
             <ExpelledContainer><ExpelledP>Отчислен</ExpelledP></ExpelledContainer>
     )
-    case 'studying':
+    case 'studies':
         return(
             <StudyingContainer><StudyingP>Обучается</StudyingP></StudyingContainer>
         )

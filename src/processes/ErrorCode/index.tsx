@@ -1,5 +1,6 @@
 import { keyframes } from "@emotion/react"
 import styled from "@emotion/styled"
+import { TErrSend } from "../../interfaces"
 import popNot from '../../shared/icons/popNOT.svg'
 import popOk from '../../shared/icons/popupOK.svg'
 const pop = keyframes`
@@ -26,10 +27,7 @@ cursor:pointer;
     margin-right:auto;
         }
 `
-export type TErrSend = {
-    typePop:boolean,
-    setCheck:React.Dispatch<React.SetStateAction<boolean>>
-}
+
 export const ErrorSend:React.FC<TErrSend> = ({typePop,setCheck}) => {
     return(
 <Img src={typePop ? popOk : popNot} onClick={() => {

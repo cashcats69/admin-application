@@ -28,7 +28,7 @@ display:flex;
 margin-bottom:40px;
 margin-left:40px;
 border-bottom: 4px solid #FFFFFF;
-
+outline:none;
 @media (max-width: 768px) {
     justify-content:center;
     margin:12px 0px 0 0px;
@@ -40,6 +40,7 @@ border-bottom: 4px solid #FFFFFF;
     }
     padding:0 ;
     a{
+        outline:none;
         display:flex;
         align-items: flex-end;
     }
@@ -49,6 +50,7 @@ const CurrentLi = styled.li`
 border-right: 4px solid #585CC6;
 display:flex;
 margin-bottom:40px;
+outline:none;
 margin-left:40px;
 @media (max-width: 768px) {
     justify-content:center;
@@ -58,6 +60,7 @@ margin-left:40px;
     justify-content:space-between;
     padding:0 16px 0 16px;
     a{
+        outline:none;
         display:flex;
         align-items: flex-end;
     }
@@ -69,6 +72,7 @@ width:20px;
 height:20px;
 margin-top:auto;
 margin-bottom:auto;
+outline:none;
 @media (max-width: 768px) {
     display:none;
     }
@@ -79,6 +83,7 @@ margin-top:auto;
 margin-bottom:auto;
 width:20px;
 height:20px;
+outline:none;
 @media (max-width: 768px) {
     display:none;
     }
@@ -86,22 +91,24 @@ height:20px;
 const PaginatedText = styled.p`
 color: #8A8A8A;
 margin:0;
-font-family: Factor A TRIAL;
+font-family:  'Factor A';
 font-size: 16px;
 font-weight: 700;
 line-height: 40px;
 letter-spacing: 0.01em;
 text-align: center;
+outline:none;
 `
 const CurrentText = styled.p`
 color: #585CC6;
 margin:0;
-font-family: Factor A TRIAL;
+font-family: 'Factor A';
 font-size: 16px;
 font-weight: 700;
 line-height: 40px;
 letter-spacing: 0.01em;
 text-align: center;
+outline:none;
 `
 export const PaginatedMenu:React.FC<IPaginatedMenu> = ({currentPage}) => {
     const names = ['Участники','Отзывы','Обо мне']
@@ -112,11 +119,11 @@ export const PaginatedMenu:React.FC<IPaginatedMenu> = ({currentPage}) => {
         <PaginatedUl>
             {names.map((name,index) => { if(currentPage === index){
                 return(
-                    <CurrentLi key={index}><CurrentImg src={iconsF[index]}/><NavLink style={{ textDecoration: 'none' }} to={links[index]}><CurrentText>{name}</CurrentText></NavLink></CurrentLi>
+                    <CurrentLi key={index}><CurrentImg src={iconsF[index]}/><NavLink style={{ textDecoration: 'none', outline:'none' }} to={links[index]}><CurrentText>{name}</CurrentText></NavLink></CurrentLi>
                 )
             }else{
 return(
-    <PaginatedLi  key={index}><PaginatedImg src={icons[index]}/><NavLink style={{ textDecoration: 'none' }} to={links[index]}><PaginatedText>{name}</PaginatedText></NavLink></PaginatedLi>
+    <PaginatedLi  key={index}><PaginatedImg src={icons[index]}/><NavLink style={{ textDecoration: 'none' , outline:'none'}} to={links[index]}><PaginatedText>{name}</PaginatedText></NavLink></PaginatedLi>
 )}
             })}
         </PaginatedUl>

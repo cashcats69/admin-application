@@ -1,6 +1,6 @@
 import styled from "@emotion/styled";
 import { useState } from "react"
-import { Filter, IMembersFilter } from "../../interfaces";
+import {  IMembersFilter } from "../../interfaces";
 import dropArrow from '../../shared/icons/dropArrow.svg'
 const Main = styled.div`
   font-family: sans-serif;
@@ -8,6 +8,7 @@ const Main = styled.div`
   position: relative;
   width:163px;
   height:62px;
+  border: 1px solid #E0E0E0;
 `;
 
 const DropDownContainer = styled.div`
@@ -68,11 +69,17 @@ const toggling = () => setIsOpen(!isOpen);
 
 const onOptionClicked = (value: string) => () => {
     
-    if(value !== Filter.other){
-      const newAction = action.filter(item => {return Filter[item.status] === value })
+    if(value === "Обучается"){
+      const newAction = action.filter((user: { academyStatus: string }) => {return user.academyStatus === 'studies' })
       
     setAction(newAction)
-      }else{
+      }else if(value === "Отчислен"){
+        const newAction = action.filter((user: { academyStatus: string }) => {return user.academyStatus === 'expelled' })
+        setAction(newAction)
+      } else if(value === "Закончил"){
+        const newAction = action.filter((user: { academyStatus: string }) => {return user.academyStatus === 'finished' })
+        setAction(newAction)
+      } else{
         setAction(action)
       }
     setState(value);

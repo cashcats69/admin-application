@@ -1,6 +1,6 @@
 import styled from "@emotion/styled"
 import { TAboutInput, TDiv } from "../../../interfaces"
-
+import { memo } from "react";
 const Input = styled.input`
 outline: none;
 height: 50px;
@@ -20,13 +20,17 @@ text-align: left;
 text-indent: 16px;
 margin-botton:8px;
 }
+&:disabled{
+    background:#FFFFFF;
+    color: #8A8A8A;
+}
 `
 const InputLabel = styled.label`
+font-family: Factor A;
 height:20px;
 font-size: 14px;
 font-weight: 500;
 line-height: 20px;
-letter-spacing: -0.0124em;
 text-align: left;
 margin:0;
 `
@@ -47,11 +51,19 @@ margin-right:24px;
 }
 `)
 
-export const AboutInput:React.FC<TAboutInput> = ({inputName,placeholderName,inputPattern,onChangeFunc,widthProp}) => {
+export const AboutInput:React.FC<TAboutInput> = memo(({currentValue,isDisabled,inputName,placeholderName,onChangeFunc,widthProp}) => {
     return(
         <Div widthProp={widthProp}>
         <InputLabel>{inputName}</InputLabel>
-        <Input placeholder={placeholderName} onChange={onChangeFunc} pattern={inputPattern}/>
+        <Input required value={currentValue ? currentValue : ''} name={inputName} disabled={isDisabled} placeholder={placeholderName} onChange={onChangeFunc}/>
     </Div>
     )
-}
+});
+export const AboutDate:React.FC<TAboutInput> = memo(({currentValue,isDisabled,inputName,placeholderName,onChangeFunc,widthProp}) => {
+    return(
+        <Div widthProp={widthProp}>
+        <InputLabel>{inputName}</InputLabel>
+        <Input value={currentValue ? currentValue : ''} name={inputName} disabled={isDisabled} placeholder={placeholderName} onChange={onChangeFunc}/>
+    </Div>
+    )
+});
