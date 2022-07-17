@@ -1,21 +1,26 @@
-import { createEffect, createEvent, createStore } from "effector";
+import { createEffect, createEvent, createStore, forward,sample } from "effector";
 import jwtDecode from "jwt-decode";
-type TExp ={
-  exp:number,
-}
-export const authTrue = createEvent()
-export const authFalse = createEvent()
-export const checkAuth = createEffect( () => {
-  const token = localStorage.getItem('token')
-  if(token){
-    const {exp}:TExp = jwtDecode(token)
-    if(exp > Date.now()/1000){
-      return true
-    } else return false
-  }
-})
+export const checkAuth = createEffect(() => {
+  const token = localStorage.getItem("token");
+  if (token) {
+    const { exp }:{exp:number} = jwtDecode(token);
+    if (exp > Date.now() / 1000) {
+      return true;
+    } else return false;
+  } else return false;
+});
+export const checkTrigger = createEvent()
+export const resetTrigger = createEvent()
 export const $AuthUser = createStore(false)
-.on(authTrue, (_) => true)
-.on(authFalse, (_) => false)
-.on(checkAuth.doneData, (_,data) => data)
-
+export const $NavTrigger = createStore(false).reset(resetTrigger)
+$NavTrigger.watch((data) => {console.log(data)});
+forward({
+  from:checkAuth.doneData,
+  to:$AuthUser
+});
+sample({
+  clock: checkTrigger,
+  source: $NavTrigger,
+  fn: (state:boolean) => (!state),
+  target: $NavTrigger
+});

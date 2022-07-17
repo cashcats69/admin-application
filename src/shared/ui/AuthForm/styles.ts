@@ -1,6 +1,5 @@
 import styled from "@emotion/styled";
-import bgImg from '../../shared/icons/back.svg'
-//Не сообразил, куда лучшие прицепить общие для двух экранов компоненты
+import bgImg from '../../icons/back.svg'
 export const AuthContainer = styled.div`
 background-color: #585CC6;
   min-height: 100vh;

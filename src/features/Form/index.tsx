@@ -1,102 +1,119 @@
 /* eslint-disable no-useless-escape */
-import styled from "@emotion/styled"
-import { NavLink } from "react-router-dom"
-import { useEffect, useState } from "react"
-import { AuthInputForm } from "../../shared/ui"
-import { ButtonSubmit } from "../../shared/ui/Button"
-import { AuthInput, AuthInputPassword } from "../../shared/ui/Input"
-import { TResponseData } from "../../interfaces"
-
-const StyledH2 = styled.h2`
-font-family: Factor A;
-color: #333333;
-font-size: 32px;
-font-weight: 700;
-line-height: 32px;
-letter-spacing: 0em;
-text-align: left;
-margin-bottom: 0px;
-margin-top:0px;
-@media(max-width:768px){
-    font-size: 24px;
-}
-`
-interface IAuthForm{
-    check:boolean,
-    sendData:(data: TResponseData) => Promise<void>,
-}
-export const AuthForm:React.FC<IAuthForm> = ({check,sendData}) => {
-    const [name, setName] = useState<string>('');
-    const [password, setPassword] = useState<string>('');
-    const [buttonDisabled,setButtonDisabled] = useState<boolean>(true);
-    const [inputInvalid, setInputInvalid] = useState<boolean>(false);
-    const [mailInvalid, setMailInvalid] = useState<boolean>(false);
-    const activeStyle = {
-        color: "#585CC6",
-        margin:"16px",
-        fontFamily: "Gilroy",
-        fontSize: "16px",
-        fontWeight: "500",
-        lineHeight: "16px",
-        letterSpacing: "0em",
-        textDecoration: "none",
+import { NavLink } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { AuthInputForm } from "../../shared/ui/AuthForm/styles";
+import { ButtonSubmit } from "../../shared/ui/Button";
+import ShowLogo from "../../shared/icons/Show.svg";
+import HideLogo from "../../shared/icons/Hide.svg";
+import infoLogo from "../../shared/icons/Info.svg";
+import { useForm } from "effector-forms";
+import { useStore } from "effector-react";
+import { $errChecker, loginForm, loginFx } from "../../pages/Auth/model/form";
+import {
+	StyledH2,
+	Div,
+	InputLabel,
+	Input,
+	Indicators,
+	Info,
+	SpanToolTip,
+	InputPass,
+	Eye,
+} from "./styles";
+const activeStyle = {
+	color: "#585CC6",
+	margin: "16px",
+	fontFamily: "Gilroy",
+	fontSize: "16px",
+	fontWeight: "500",
+	lineHeight: "16px",
+	letterSpacing: "0em",
+	textDecoration: "none",
 };
-    // const items = useStore($listItems);
-    // const addItemEv = useEvent(addItem);
-    const regexLogin = RegExp("^((?=[a-zA-Z0-9])[a-zA-Z0-9!#$%&\\'*+\-\/=?^_`.{|}~]{1,25})@(([a-zA-Z0-9\-]){1,25}\.)([a-zA-Z0-9]{2,4})$");
-    const regexPassword: RegExp = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*\W).{8,24}$/g;
-useEffect(() => {
-
-    if(password.match(regexPassword)){
-        setInputInvalid(false);
-    }
-    if(regexLogin.test(name)){
-        setMailInvalid(false);
-    }
-    if(regexLogin.test(name) && password.match(regexPassword)){
-        setButtonDisabled(false);
-        setInputInvalid(false);
-        setMailInvalid(false);
-    } else{
-        setButtonDisabled(true);
-        
-    }
-},[name,password]);
-
-    const onPasswordChange = (e:React.ChangeEvent<HTMLInputElement>) => {
-        setPassword(e.target.value);
-        
-        setInputInvalid(true);
-    }
-    const onNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setName(e.target.value);
-        setMailInvalid(true);
-    };
-    const onSubmit = (e: React.FormEvent) => {
-        const regexLogin = RegExp("^((?=[a-zA-Z0-9])[a-zA-Z0-9!#$%&\\'*+\-\/=?^_`.{|}~]{1,25})@(([a-zA-Z0-9\-]){1,25}\.)([a-zA-Z0-9]{2,4})$");
-        const regexPassword: RegExp = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*\W).{8,24}$/g;
-        e.preventDefault();
-    
-        if (name && password) {
-        if(regexLogin.test(name) && password.match(regexPassword)){
-            const data = {
-                email: name,
-                password: password,
-            };
-sendData(data)
-        }}
-
-    };
-    
-    return(
-        <AuthInputForm onSubmit={onSubmit}>
-        <StyledH2>Войти</StyledH2>
-        <AuthInput check={check} inputName={"Логин"} inputType={"text"} onChangeFunc={onNameChange} inputPattern="^((?=[a-zA-Z0-9])[a-zA-Z0-9!#$%&\\'*+\-\/=?^_`.{|}~]{1,25})@(([a-zA-Z0-9\-]){1,25}\.)([a-zA-Z0-9]{2,4})$" infoValue={mailInvalid} />
-        <AuthInputPassword check={check} inputName={"Пароль"} onChangeFunc={onPasswordChange} infoValue={inputInvalid} inputPattern="^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*\W).{8,24}$" />
-        <ButtonSubmit buttonType="submit" buttonDisabled={buttonDisabled} buttonText='Войти'/>
-        <NavLink 
-        style={activeStyle}
-        to="recovery">Забыли пароль?</NavLink>
-        </AuthInputForm>
-    )
-}
+export const AuthForm: React.FC = () => {
+	const errChecker = useStore($errChecker);
+	const [value, setValue] = useState<boolean>(true);
+	const { fields, submit } = useForm(loginForm);
+	const pending = useStore(loginFx.pending);
+	const [styling, setStyling] = useState("#585CC6");
+	const [passStyling, setPassStyling] = useState("#585CC6");
+	const onSubmit = async (e: React.FormEvent) => {
+		e.preventDefault();
+		if(fields.email.value !== '' && fields.password.value !== ''){
+			submit();
+		}
+	};
+	useEffect(() => {
+		if (fields.email.isValid) {
+			if (errChecker.check) {
+				setStyling("#585CC6");
+			} else {
+				setStyling("#EB5757");
+			}
+		} else {
+			setStyling("#EB5757");
+		}
+		if (fields.password.isValid) {
+			if (errChecker.check) {
+				setPassStyling("#585CC6");
+			} else {
+				setPassStyling("#EB5757");
+			}
+		} else {
+			setPassStyling("#EB5757");
+		}
+	}, [errChecker, fields.email.isValid, fields.password.isValid]);
+	return (
+		<AuthInputForm onSubmit={onSubmit}>
+			<StyledH2>Войти</StyledH2>
+			<Div>
+				<InputLabel>Логин</InputLabel>
+				<Input
+					colorProp={fields.email.value !== "" ? styling : "#E0E0E0"}
+					placeholder={`Введите логин`}
+					value={fields.email.value}
+					type="text"
+					disabled={pending}
+					onChange={(e) => fields.email.onChange(e.target.value)}
+				/>
+				<Indicators>
+					<Info src={infoLogo} title="info" infoValue={!fields.email.isValid} />
+					<SpanToolTip>Почта должна соответствовать требованиям</SpanToolTip>
+				</Indicators>
+			</Div>
+			<Div>
+				<InputLabel>Пароль</InputLabel>
+				<InputPass
+					colorProp={fields.password.value !== "" ? passStyling : "#E0E0E0"}
+					placeholder="Введите пароль"
+					type={value ? "password" : "text"}
+					value={fields.password.value}
+					disabled={pending}
+					onChange={(e) => fields.password.onChange(e.target.value)}
+				/>
+				<Indicators>
+					<Info
+						infoValue={!fields.password.isValid}
+						src={infoLogo}
+						title="info"
+					/>
+					<SpanToolTip>
+						Пароль должен содержать латиницу и прописные буквы
+					</SpanToolTip>
+					<Eye
+						src={value ? ShowLogo : HideLogo}
+						onClick={() => setValue(!value)}
+					></Eye>
+				</Indicators>
+			</Div>
+			<ButtonSubmit
+				buttonType="submit"
+				buttonDisabled={pending}
+				buttonText="Войти"
+			/>
+			<NavLink style={activeStyle} to="recovery">
+				Забыли пароль?
+			</NavLink>
+		</AuthInputForm>
+	);
+};
